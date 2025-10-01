@@ -1,4 +1,6 @@
 #include "Actor.h"
+#include "Game.h"
+#include "Component.h"
 
 Actor::Actor(Game* game) : mState(EActive), mScale(1.f), mRotation(0.f), mGame(game)
 {

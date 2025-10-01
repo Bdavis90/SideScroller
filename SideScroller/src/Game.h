@@ -2,14 +2,8 @@
 #include <SDL3/SDL.h>
 #include <vector>
 
-// Vector2 struct just stores x/y coordinates
-// (for now)
-struct Vector2
-{
-	float x;
-	float y;
-};
 
+class Actor;
 // Game class
 class Game
 {
@@ -19,7 +13,7 @@ public:
 	bool Initialize();
 	void RunLoop();
 	void Shutdown();
-	void AddActor(class Actor* actor);
+	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);
 
 

@@ -1,10 +1,19 @@
 #include <iostream>
-#include <SDL3/SDL.h>
+#include "Game.h"
 
 int main()
 {
 	
-	std::cout << "Sidescroller" << std::endl;
+	Game game;
+
+	bool success = game.Initialize();
+
+	if (success)
+	{
+		game.RunLoop();
+	}
+
+	game.Shutdown();
 
 	return 0;
 	

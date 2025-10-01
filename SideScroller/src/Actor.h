@@ -8,6 +8,9 @@ struct Vector2
 	int y;
 };
 
+class Game;
+class Component;
+
 class Actor
 {
 public:
@@ -19,7 +22,7 @@ public:
 		EDead
 	};
 
-	Actor(class Game* game);
+	Actor(Game* game);
 
 	virtual ~Actor();
 
@@ -27,8 +30,8 @@ public:
 	void UpdateComponents(float deltaTime);
 	virtual void UpdateActor(float deltaTime);
 
-	void AddComponent(class Component* component);
-	void RemoveComponent(class Component* component);
+	void AddComponent(Component* component);
+	void RemoveComponent(Component* component);
 
 	State GetState() const { return mState; }
 
@@ -41,6 +44,6 @@ private:
 	float mScale;
 	float mRotation;
 
-	std::vector<class Component*> mComponents;
-	class Game* mGame;
+	std::vector<Component*> mComponents;
+	Game* mGame;
 };
