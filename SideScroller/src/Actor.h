@@ -1,15 +1,11 @@
 #pragma once
 
 #include <vector>
-
-struct Vector2
-{
-	int x;
-	int y;
-};
+#include "Math.h"
 
 class Game;
 class Component;
+class Vector2;
 
 class Actor
 {
@@ -34,6 +30,10 @@ public:
 	void RemoveComponent(Component* component);
 
 	State GetState() const { return mState; }
+	float GetScale() const { return mScale; }
+	Vector2 GetPosition() const { return mPosition; }
+	float GetRotation() const { return mRotation; }
+	Game* GetGame() const { return mGame; }
 
 private:
 

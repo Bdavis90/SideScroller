@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <vector>
+#include "SpriteComponent.h"
+
 
 
 class Actor;
@@ -15,6 +17,9 @@ public:
 	void Shutdown();
 	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);
+
+	void AddSprite(SpriteComponent* sprite);
+	void RemoveSprite(SpriteComponent* sprite);
 
 
 private:
@@ -34,5 +39,6 @@ private:
 
 	std::vector<Actor*> mActors;
 	std::vector<Actor*> mPendingActors;
+	std::vector<SpriteComponent*> mSprites;
 
 };

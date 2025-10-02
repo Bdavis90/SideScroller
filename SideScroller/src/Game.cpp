@@ -1,6 +1,8 @@
-#include "Game.h"
 #include <algorithm>
+#include <SDL_image.h>
+#include "Game.h"
 #include "Actor.h"
+#include "SpriteComponent.h"
 
 Game::Game() : mWindow(nullptr), mRenderer(nullptr), mIsRunning(true), mUpdatingActors(false)
 {
@@ -8,7 +10,11 @@ Game::Game() : mWindow(nullptr), mRenderer(nullptr), mIsRunning(true), mUpdating
 
 bool Game::Initialize()
 {
-	SDL_Init(SDL_INIT_VIDEO);
+	if (!SDL_Init(SDL_INIT_VIDEO))
+	{
+		SDL_Log("There was an error with initialization: %s", SDL_GetError());
+		return false;
+	}
 
 	mWindow = SDL_CreateWindow("SideScroller", 1024, 768, 0);
 	if (!mWindow)
@@ -24,6 +30,7 @@ bool Game::Initialize()
 		return false;
 	}
 
+	return true;
 
 }
 
@@ -72,7 +79,28 @@ void Game::RemoveActor(Actor* actor)
 		mActors.pop_back();
 	}
 
+	
+}
 
+void Game::AddSprite(SpriteComponent* sprite)
+{
+	int myDrawOrder = sprite->GetDrawOrder();
+	auto it = mSprites.begin();
+	for (it; it != mSprites.end(); ++it)
+	{
+		if (myDrawOrder < (*it)->GetDrawOrder())
+		{
+			break;
+		}
+	}
+
+	mSprites.insert(it, sprite);
+}
+
+void Game::RemoveSprite(SpriteComponent* sprite)
+{
+	auto it = std::find(mSprites.begin(), mSprites.end(), sprite);
+	mSprites.erase(it);
 }
 
 void Game::ProcessInput()
@@ -141,5 +169,12 @@ void Game::GenerateOutput()
 {
 	SDL_SetRenderDrawColor(mRenderer, 225, 123, 45, 255);
 	SDL_RenderClear(mRenderer);
+
+	for (auto& sprite : mSprites)
+	{
+		sprite->Draw(mRenderer);
+	}
+
+
 	SDL_RenderPresent(mRenderer);
 }
