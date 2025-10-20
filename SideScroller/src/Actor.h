@@ -30,9 +30,13 @@ public:
 	void RemoveComponent(Component* component);
 
 	State GetState() const { return mState; }
+	void SetState(State state) { mState = state; }
 	float GetScale() const { return mScale; }
+	void SetScale(float scale) { mScale = scale; }
 	Vector2 GetPosition() const { return mPosition; }
+	void SetPosition(const Vector2& pos) { mPosition = pos; }
 	float GetRotation() const { return mRotation; }
+	void SetRotation(float rotation) { mRotation = rotation; }
 	Game* GetGame() const { return mGame; }
 
 private:

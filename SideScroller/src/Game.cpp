@@ -3,6 +3,8 @@
 #include "Game.h"
 #include "Actor.h"
 #include "SpriteComponent.h"
+#include "BGSpriteComponent.h"
+#include "Math.h"
 
 Game::Game() : mWindow(nullptr), mRenderer(nullptr), mIsRunning(true), mUpdatingActors(false)
 {
@@ -30,6 +32,8 @@ bool Game::Initialize()
 		return false;
 	}
 
+	LoadData();
+
 	return true;
 
 }
@@ -46,6 +50,7 @@ void Game::RunLoop()
 
 void Game::Shutdown()
 {
+	UnloadData();
 	SDL_DestroyWindow(mWindow);
 	SDL_DestroyRenderer(mRenderer);
 	SDL_Quit();
@@ -121,6 +126,8 @@ void Game::ProcessInput()
 		mIsRunning = false;
 	}
 
+	mShip->ProcessKeyboard((uint8_t*)state);
+
 }
 
 void Game::UpdateGame()
@@ -167,7 +174,7 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	SDL_SetRenderDrawColor(mRenderer, 225, 123, 45, 255);
+	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
 	SDL_RenderClear(mRenderer);
 
 	for (auto& sprite : mSprites)
@@ -177,4 +184,82 @@ void Game::GenerateOutput()
 
 
 	SDL_RenderPresent(mRenderer);
+}
+
+SDL_Texture* Game::GetTexture(const std::string& fileName)
+{
+	SDL_Texture* tex = nullptr;
+
+	auto iter = mTextures.find(fileName);
+	if (iter != mTextures.end())
+	{
+		tex = iter->second;
+	}
+	else
+	{
+
+		SDL_Surface* surf = IMG_Load(fileName.c_str());
+		if (!surf)
+		{
+			SDL_Log("Failed to load texture file %s", fileName.c_str());
+			return nullptr;
+		}
+
+		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
+		SDL_DestroySurface(surf);
+		if (!tex)
+		{
+			SDL_Log("Failed to covert surface to texture for %s", fileName.c_str());
+			return nullptr;
+		}
+
+		mTextures.emplace(fileName.c_str(), tex);
+	}
+
+	return tex;
+}
+
+void Game::LoadData()
+{
+	mShip = new Ship(this);
+	mShip->SetPosition(Vector2(100.f, 384.f));
+	mShip->SetScale(1.5f);
+
+	Actor* temp = new Actor(this);
+	temp->SetPosition(Vector2(512.0f, 384.0f));
+
+	BGSpriteComponent* bg = new BGSpriteComponent(temp);
+	bg->SetScreenSize(Vector2(1024.f, 768.f));
+
+	std::vector<SDL_Texture*> bgTexs = {
+		GetTexture("src/Assets/Farback01.png"),
+		GetTexture("src/Assets/Farback01.png")
+	};
+
+	bg->SetBGTextures(bgTexs);
+	bg->SetScrollSpeed(-200.f);
+
+	bg = new BGSpriteComponent(temp, 50);
+	bg->SetScreenSize(Vector2(1024.f, 768.f));
+	bgTexs = {
+		GetTexture("src/Assets/Stars.png"),
+		GetTexture("src/Assets/Stars.png")
+	};
+	bg->SetBGTextures(bgTexs);
+	bg->SetScrollSpeed(-200.f);
+}
+
+void Game::UnloadData()
+{
+	while (!mActors.empty())
+	{
+		delete mActors.back();
+	}
+
+	for (auto i : mTextures)
+	{
+		SDL_DestroyTexture(i.second);
+	}
+
+	mTextures.clear();
 }

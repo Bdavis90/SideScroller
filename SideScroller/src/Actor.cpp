@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Component.h"
 
-Actor::Actor(Game* game) : mState(EActive), mScale(1.f), mRotation(0.f), mGame(game)
+Actor::Actor(Game* game) : mPosition(Vector2()), mState(EActive), mScale(1.f), mRotation(0.f), mGame(game)
 {
 	mGame->AddActor(this);
 }
@@ -19,10 +19,19 @@ Actor::~Actor()
 
 void Actor::Update(float deltaTime)
 {
+	if (mState == EActive)
+	{
+		UpdateComponents(deltaTime);
+		UpdateActor(deltaTime);
+	}
 }
 
 void Actor::UpdateComponents(float deltaTime)
 {
+	for (auto comp : mComponents)
+	{
+		comp->Update(deltaTime);
+	}
 }
 
 void Actor::UpdateActor(float deltaTime)
@@ -31,8 +40,22 @@ void Actor::UpdateActor(float deltaTime)
 
 void Actor::AddComponent(Component* component)
 {
+	int myOrder = component->GetUpdateOrder();
+	auto it = mComponents.begin();
+	for (it; it != mComponents.end(); ++it)
+	{
+		if (myOrder < (*it)->GetUpdateOrder())
+		{
+			break;
+		}
+	}
 }
 
 void Actor::RemoveComponent(Component* component)
 {
+	auto it = std::find(mComponents.begin(), mComponents.end(), component);
+	if (it != mComponents.end())
+	{
+		mComponents.erase(it);
+	}
 }

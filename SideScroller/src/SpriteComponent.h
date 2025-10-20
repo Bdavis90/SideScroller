@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Component.h"
+#include <SDL_image.h>
 
 class Actor;
 class SDL_Renderer;
-class SDL_Texture;
 
 class SpriteComponent : public Component
 {

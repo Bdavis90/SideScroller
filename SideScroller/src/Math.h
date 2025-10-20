@@ -16,6 +16,10 @@ class Vector2
 public:
 
 	Vector2() : x(0.f), y(0.f)
+	{
+	}
+
+	explicit Vector2(float inX, float inY) : x(inX), y(inY)
 	{ }
 
 	float x;

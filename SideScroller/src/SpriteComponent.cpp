@@ -4,7 +4,7 @@
 #include "Game.h"
 #include "Math.h"
 
-SpriteComponent::SpriteComponent(Actor* owner, int drawOrder) : Component(owner), mTexture(nullptr), mTexHeight(0), mTexWidth(0)
+SpriteComponent::SpriteComponent(Actor* owner, int drawOrder) : Component(owner), mTexture(nullptr), mTexHeight(0), mTexWidth(0), mDrawOrder(drawOrder)
 {
 	mOwner->GetGame()->AddSprite(this);
 }
